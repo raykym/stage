@@ -1,0 +1,34 @@
+package Primechk {
+   
+  sub check ($num : long) : long {
+
+      for ( my $i = 2L; $i < $num; $i++){
+          my $res : long = $num % $i;
+          if ( $res == 0L ) {
+              return 0L; # false
+          }
+      }
+    return 1L;  # true
+  }
+
+  sub divisor ($num : long, $count : int) : long[] {
+
+      my $res = new long[$count];
+
+      my $cnt = $num;
+      my $i = 0;
+
+      while ( $cnt >= 1L) {
+          my $chk = $num % $cnt;
+
+          if ( $chk == 0L ) {
+              $res->[$i] = $cnt;
+              $i++;
+          }
+          $cnt--;
+      }
+      return $res; 
+  }
+
+
+}

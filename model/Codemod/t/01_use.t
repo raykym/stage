@@ -1,0 +1,8 @@
+use strict;
+use warnings;
+use Test::More;
+use lib '/home/debian/perlwork/work/model/Codemod';
+
+use_ok('Codemod');
+
+done_testing;
