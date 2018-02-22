@@ -10,7 +10,7 @@ package Codemod;
 
 # ordcoderesでの出力をdecnewで受け取る、区切り文字を付けてシリアライズしている
 
-# Codemod->decnew( コード ); 変換用コード (解読済)
+# Codemod->decnew( コード ); 変換用コード (暗号化解除済)
 #   ->chrcode  コードを文字列にする
 #   ->chrcoderes デコード済　文字列を出力する
 

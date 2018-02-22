@@ -8,7 +8,7 @@ use feature 'say';
 use lib '..';
 use Primechk;
 
-my $obj = Primechk->new(1234567890123456789012345);
+my $obj = Primechk->new(100000000000001);
    $obj->factor;
 
 for my $i (@{$obj->factorres}){

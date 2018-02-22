@@ -195,10 +195,16 @@ sub factor {
 
     my @res;
 
-    # $numは減りながらループする
+    # $numは減りながらループする  小さい数で割っていく
     for (my $i=2; $i < $num; $i++){
- #       print "PROG: $num \r";
+#        print "PROG: $num \r";
         my $chk = 0;
+
+        # $numが素数ならパスする     
+        my $chk_num = Math::GMP->new($num);
+        my $chk_prime = $chk_num->probab_prime(50);
+        last if ( ($chk_prime == 1 )||($chk_prime == 2));
+
         while ( $chk == 0 ) {
       #      $chk = $num % $i;
           my $num_tmp = $num->copy();
@@ -211,8 +217,9 @@ sub factor {
                 push(@res,$i);
             }
         } # while
+        
     } # for
- #   say "";  # PROGの更新
+#    say "";  # PROGの更新
     push(@res,$num);
     push(@res,1);
 
