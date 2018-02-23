@@ -1,7 +1,8 @@
 use strict;
 use warnings;
 use Test::More;
-use lib '..';
+#use lib '..';
+use lib '../lib/Primechk';
 
 
 subtest 'use chack' => sub {

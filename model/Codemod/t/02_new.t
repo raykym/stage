@@ -1,9 +1,10 @@
 #t/02_new.t
 
 use strict;
-use warnings;
+#use warnings;
 use Test::More;
-use lib '/home/debian/perlwork/work/model/Codemod';
+#use lib '/home/debian/perlwork/work/model/Codemod';
+use lib '../lib';
 use Codemod;
 
 subtest 'no_args' => sub {

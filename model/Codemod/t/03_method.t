@@ -5,7 +5,8 @@ use warnings;
 use utf8;
 use feature 'say';
 use Test::More;
-use lib '/home/debian/perlwork/work/model/Codemod';
+#use lib '/home/debian/perlwork/work/model/Codemod';
+use lib '../lib';
 #use lib '/home/debian/perlwork/work/model/Primechk/lib';  # for SPVM
 use Codemod;
 use Data::Dumper;

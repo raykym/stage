@@ -15,6 +15,7 @@ use Math::GMP;
 
 use Calcchange;
 
+# check機能そのものはGMPライブラリのprobab_prime関数と同じことをするが速度は遅い
 # Primechk->new(#);
 # Primechk->check;
 # Primechk->result;  0: false, 1: true 
@@ -32,7 +33,7 @@ use Calcchange;
 # $self->{gcdhistory} 履歴を取得する
 
 # Primechk->axby1; # 履歴を利用して2元一次不等方程式を解く
-# Primechk->equation; # 履歴から逆に展開して式を作る。 ax + by = 1の形式でx,yを求める
+# Primechk->equation; # 結果を文字列として得る。　　履歴から逆に展開して式を作る。 ax + by = 1の形式でx,yを求める
 
 sub new {
     my ($class,@arg) = @_;
@@ -341,7 +342,7 @@ sub axby1 {
    my @mod_trans_r = reverse(@mod_trans);  #　逆順に処理するため
 
    my $context;    # text
-   for my $i (@mod_trans_r){
+   for my $i (@mod_trans_r){   # $iは　( mod , 式　) 形式の配列リファレンス
       my @mod = @$i;
     
       if ( ! defined $context) {
@@ -359,10 +360,10 @@ sub axby1 {
           }
           # 書式の数値と余りが一致した時に、数字の後ろが *印なら、数字を書式で置き換える
           if (( $pase[$i] == $mod[0] ) && ( $pase[$i+1] eq '*') ){       # 文字列だと多重パッチする。 数字の重複は'*'の前のみ
-              push(@pase_c,$mod[1]);     
+              push(@pase_c,$mod[1]);                                     # 数字を履歴(@mod_trans)の式に置き換える    
               next;
           } 
-          push(@pase_c,$pase[$i]);  # 数値はここで
+          push(@pase_c,$pase[$i]);  # 記号でなく、置き換え対象でない数値は、ここで追加される
        } # for @pase
        $context = join(" ",@pase_c);
 

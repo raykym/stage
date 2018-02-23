@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use feature 'say';
 use Test::More;
-use lib '..';
+#use lib '..';
+use lib '../lib';
 use Privkeymake;
 use Data::Dumper;
 

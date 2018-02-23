@@ -8,7 +8,7 @@ package Codemod;
 #   ->ordcode 文字列をコード化する
 #   ->ordcoderes  デコード済　コード出力する
 
-# ordcoderesでの出力をdecnewで受け取る、区切り文字を付けてシリアライズしている
+# ordcoderesでの出力をdecnewで受け取る、区切り文字(183)を付けてシリアライズしている
 
 # Codemod->decnew( コード ); 変換用コード (暗号化解除済)
 #   ->chrcode  コードを文字列にする
@@ -27,14 +27,20 @@ sub new {
     my ( $class , $arg ) = @_;
 
     # 入力された文字列を内部コードにして、配列に置き換える
-    my @char = split(//,$arg);
-    my @char_enc;
 
-    for my $i (@char){
-        $i = encode_utf8($i);
-        push(@char_enc,$i);
-    }
-    undef @char;
+    my @char_enc;
+    if ( defined $arg ) {
+
+        my @char = split(//,$arg);
+
+        for my $i (@char){
+            $i = encode_utf8($i);
+            push(@char_enc,$i);
+        }
+        undef @char;
+
+    } # if  
+
     return bless { 'string' => \@char_enc } , $class;
 }
 
@@ -47,8 +53,11 @@ sub string {
 # デコード用コンストラクタ
 sub decnew {
     my ( $class , $arg ) = @_;
+    my @code;
 
-    my @code = split(/183/,$arg);  # 区切り文字で配列化
+    if ( defined $arg ){
+       @code = split(/183/,$arg);  # 区切り文字で配列化
+    } 
 
     return bless { 'code' => \@code } , $class;
 }

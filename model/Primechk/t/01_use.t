@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use lib "..";
+use lib "../lib/Primechk";
 
 use_ok('Primechk');
 
