@@ -1,14 +1,14 @@
 package Codemod;
 
-# utf8の文字列を入力して、コード化を行いエンコードとデコードを行う。
+# utf8の文字列を1行入力して、コード化を行いエンコードとデコードを行う。
 # 処理毎にメソッドに置き換える。
 # 暗号化は別もモジュールで行う想定
 
 # Codemod->new( 文字列);  変換用コンストラクタ  utf8の未エンコード文章を入力する
 #   ->ordcode 文字列をコード化する
-#   ->ordcoderes  デコード済　コード出力する
+#   ->ordcoderes  デコード済　コード出力する 
 
-# ordcoderesでの出力をdecnewで受け取る、区切り文字(183)を付けてシリアライズしている
+# ordcoderesでの出力をdecnewで受け取る
 
 # Codemod->decnew( コード ); 変換用コード (暗号化解除済)
 #   ->chrcode  コードを文字列にする
@@ -26,45 +26,65 @@ use MIME::Base64 qw/encode_base64 decode_base64/;
 sub new {
     my ( $class , $arg ) = @_;
 
-    # 入力された文字列を内部コードにして、配列に置き換える
+    # 入力された文字列を内部コードに
+    # 1行づつ入力を受ける想定
 
-    my @char_enc;
+#    my @line;
     if ( defined $arg ) {
+        $arg = encode_utf8($arg);
 
-        my @char = split(//,$arg);
+#        @line = split(//,$arg);  #一文字ずつに分割
+#        for my $i (@line){
+#            $i = encode_utf8($i);
+#        }
 
-        for my $i (@char){
-            $i = encode_utf8($i);
-            push(@char_enc,$i);
-        }
-        undef @char;
+    }
 
-    } # if  
-
-    return bless { 'string' => \@char_enc } , $class;
+    return bless { 'string' => $arg } , $class;
 }
 
 sub string {
     my $self = shift;
     # 入力された文字列のアクセサー 配列リファレンス戻り  内部文字列
-    return $self->{string}; 
+
+    my @line = split(//,$self->{string});
+
+    return \@line; 
 }
 
 # デコード用コンストラクタ
 sub decnew {
     my ( $class , $arg ) = @_;
-    my @code;
+    # 数列が入力される想定 数列なのでperlエンコードは不要と判断
 
-    if ( defined $arg ){
-       @code = split(/183/,$arg);  # 区切り文字で配列化
-    } 
+    my @code = split(//,$arg);  # 1文字つづに分解
+    my @codes;
 
-    return bless { 'code' => \@code } , $class;
+    # Base64コードがキャラクターコードになっているので、46から122までが使われている
+    # @codeのインデックスでキャラクターコードに分解する
+    for (my $i=0; $i < $#code; $i++ ){
+        if ( $code[$i] == 1 ) {
+             # 一桁目が１の場合　３桁のコード
+             my $chr = "$code[$i]$code[$i+1]$code[$i+2]";            
+             push(@codes,$chr);
+             $i = $i + 2; # インデックスを2つすすめる
+             next;
+        }
+        if ( $code[$i] >= 4 ) {
+            # 4以上の場合　２桁のキャラクターコード
+            my $chr = "$code[$i]$code[$i+1]";
+            push(@codes,$chr);
+            $i = $i + 1; # インデックスを１つすすめる
+            next;
+        }
+    } # for $i
+
+    return bless { 'code' => \@codes } , $class;
 }
 
 sub code {
     my $self = shift;
-    # 入力されたコードを表示するアクセサー  配列リファレンス
+    # 入力されたコードを表示するアクセサー  キャラクターコードの配列リファレンス
     return $self->{code};
 }
 
@@ -73,29 +93,15 @@ sub ordcode {
     # 文字列をコードに
     my $self = shift;
 
-    my @b64_enc;
-    my $string = $self->{string};
-    for my $i (@$string){
-        my $code = encode_base64("$i");
-        push(@b64_enc,$code);
-     #   say "code: $code";
-    }
+    my $code = encode_base64($self->{string},'*');  # 1行まるっとbase64エンコード  *はデコードに必要デフォルトのLFだと複号に不都合
+    my @b64_enc = split(//,$code);  # ASCII文字を１文字づつ配列に
 
     my @code_b64;
-    for my $i (@b64_enc){
-        # 一文字分のコードをキャラクターで分解
-        my @wordarray = split(//,$i);
-        my @chararray;
-            for my $j (@wordarray){
-                my $chrcode = ord("$j");
-                push(@chararray,$chrcode);
-             #  say "word: $chrcode";
-            }
-        push(@code_b64,@chararray);
-        push(@code_b64,ord("|"));  #　|を区切り文字で追加
-        undef @chararray;
-        undef @wordarray;
-    }
+        for my $j (@b64_enc){
+            my $chrcode = ord("$j");
+            push(@code_b64,$chrcode);  # b64コードがASCII一文字づつ数値配列
+            undef $chrcode;
+        }
 
     $self->{ordcode} = \@code_b64;
 
@@ -105,9 +111,9 @@ sub ordcoderes {
     my $self = shift;
 
     my @tmp = @{$self->{ordcode}};
-    my $code = join("183",@tmp);   # 区切り文字を付けて平文化
+    my $code = join("",@tmp);   # 数列平文化
 
-       $self->{ordcoderes} = $code;  # 平文
+       $self->{ordcoderes} = $code;  # 数列  内部文字列 数字だから影響はないか？
 
     return $self->{ordcoderes};
 }
@@ -116,40 +122,21 @@ sub chrcode {
     # コードを文字列に
     my $self = shift;
 
-    my $code = $self->{code};
+    my $numstr = $self->{code};
+    my @chr_code;
 
-    # キャラコードからb６４コードへ
-    # 1次元配列で文字区切りを探しながらデコード
-    my @decodearray;
-    for my $i (@$code){
-        my $decode = chr($i);  # キャラクターへ戻す
-        push(@decodearray,$decode);
-      #  say "decode: $decode";
+    # 数値をキャラクターに置き換え
+    for my $i (@$numstr){
+        my $chr = chr($i);
+        push(@chr_code,$chr);
     }
 
-    my @codeword;
-    my @char_b64;
-    # |を区切りとしてb64ワードに戻す
-    for my $i (@decodearray){
-        if ( $i ne "|" ) {
-            push(@codeword,$i);
-        } elsif ( $i eq "|") {
-            my $word = join("",@codeword);
-            push(@char_b64, $word);
-          #  say "word: $word";
-            @codeword = ();
-        }
-    }
-    
-    my @b64_dec;
-    # b64コードから文字列に
-    for my $i (@char_b64){
-        my $chr = decode_base64($i);
-        push(@b64_dec,$chr);
-      #  say "decode: $chr";
-    }
+ #   my $b64_code = join("*",@chr_code);  # 1行にまとめて  encode_base64で付けた*で連結
+    my $b64_code = join("",@chr_code);  # 1行にまとめて
 
-    $self->{chrcode} = \@b64_dec;
+    my $str = decode_base64($b64_code);   #１行まるっと変換を試す  
+         
+    $self->{chrcode} = $str;
 
 } # chrcode
 
@@ -158,15 +145,9 @@ sub chrcoderes {
     # 文字列　デコード文字列で出力
     my $string = $self->{chrcode};
 
-    my @char_dec;
-    for my $i (@$string){
-        $i = decode_utf8($i);
-        push(@char_dec,$i);
-    }
+       $string = decode_utf8($string);
 
-    my $str = join("",@char_dec);
-
-    $self->{chrcoderes} = $str;   # 平文
+    $self->{chrcoderes} = $string;   # 平文
 
     return $self->{chrcoderes};
 }

@@ -12,7 +12,7 @@ use Math::BigInt lib => 'GMP';
 use FindBin;
 use Math::GMP;
 
-use lib "$FindBin::Bin/model/Primechk";
+#use lib "$FindBin::Bin/model/Primechk";
 use Primechk;
 
 $| = 1;

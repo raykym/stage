@@ -26,11 +26,11 @@ subtest 'string method' => sub {
 };
 
 subtest 'ordcode method' => sub {
-
        $obj->ordcode;
     my $codestr = $obj->ordcoderes;
-    is $codestr , $codestr;
-    say "res: $codestr";
+    is $codestr , '525271675252716952527171525271735252717552527176525271785252718052527182525271845252718652527188525271905252719852527110042';
+
+ #   say "res: $codestr";
          
 };
 
@@ -52,5 +52,22 @@ subtest 'chrcode method' => sub {
      say $string;
 };
 
+my $str2 = << "EOL";
+!"#$%&'()=~|{}[]<>_
+EOL
+
+my $obj3 = Codemod->new($str2);
+   $obj3->ordcode;
+my $ordcode2 = $obj3->ordcoderes;
+
+my $obj4 = Codemod->decnew($ordcode2);
+
+subtest 'char test' => sub {
+
+   my $code = join("",@{$obj4->code});
+      $code = decode_utf8($code);
+   my $ordcode = join("",@{$obj3->{ordcode}});
+   is $code , $ordcode;
+};
 
 done_testing;

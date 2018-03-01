@@ -5,7 +5,7 @@ use warnings;
 use feature 'say';
 use Test::More;
 #use lib '..';
-use lib '../lib/Primechk';
+use lib '../lib';
 use Primechk;
 use Data::Dumper;
 

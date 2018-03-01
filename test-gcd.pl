@@ -6,7 +6,7 @@ use utf8;
 use feature 'say';
 use FindBin;
 
-use lib "$FindBin::Bin/model/Primechkr";
+#use lib "$FindBin::Bin/model/Primechkr";
 use Primechk;
 use Data::Dumper;
 

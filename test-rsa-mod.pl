@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# 作成したモジュールでの暗号化のテスト
 
 use strict;
 use warnings;
@@ -29,27 +30,42 @@ say "n: $keysres->{n}";
 say "message convert";
 
 # メッセージの作成
-my $str = "あめんぼあかいよあいうえお";
+my $str = << "EOF";
+あめんぼあかいよあいうえお
+株式会社ほげほげ
+イロハニホヘトチリヌルヲワガヨタレソ
+アイウエオカキクケコサシスセソ
+０１２３４５６７８９
+亜居兎絵御化気区毛個
+!"#$%&'()=~{`*+?><}{
+EOF
 
-my $mess = Codemod->new($str);
+my @page = split(/\n/,$str);  # 行に分解
+my @page_code;
 
-   $mess->ordcode;
+say "base strings";
+say for @page;
 
-my $numstring = $mess->ordcoderes; # 数字列
+# 行単位でコード化
+for my $i ( @page) {
+  #  $i =~ s/[\s　]+//g;  # 空白の除去
+    my $mess = Codemod->new($i);
+       $mess->ordcode;
+    my $numstring = $mess->ordcoderes; # 数字列
+    push(@page_code,$numstring);
+     say "chrcode:";
+     say $numstring;
+} # for
 
-say $numstring;
 
 # 暗号化
 
 my $e = 65537;
 my $n = $keysres->{n};
 
-my @numstr = split(/183/,$numstring);
 my @numstr_enc;
 
-say $#numstr;
-
-for my $m (@numstr){
+for my $m (@page_code){
     my $enc = Math::BigInt->new($m);
        $enc->bmodpow($e,$n);
     push(@numstr_enc,$enc);
@@ -58,26 +74,37 @@ for my $m (@numstr){
 
 my $str_enc = join("\n",@numstr_enc);
 
-say $str_enc;
+say "encode string";
+say $str_enc;    #暗号化したページ
+
+
 
 # 複号
 
 my @enc_str = split(/\n/,$str_enc);
 
 my $d = $keysres->{d};
-my @chrstr;
+my @chrnums;
 
 for my $c (@enc_str) {
     my $chr = Math::BigInt->new($c);
        $chr->bmodpow($d,$n);
-    push(@chrstr,$chr);
+    push(@chrnums,$chr);
 }
 
-my $chars = join("183",@chrstr);
+my $chars = join("\n",@chrnums);  # 数列　キャラクターコードまで複号
 
-my $dec = Codemod->decnew($chars);
-   $dec->chrcode;
+say "decode chars";
+say $chars;
 
-my $decstring = $dec->chrcoderes;
+my @decnums = split(/\n/,$chars);
 
-say $decstring;
+for my $chr (@decnums){
+    my $dec = Codemod->decnew($chr);
+       $dec->chrcode;
+
+    my $decstring = $dec->chrcoderes;
+    say "decode line";
+    say $chr;
+    say $decstring;
+}
