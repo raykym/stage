@@ -8,6 +8,7 @@ use Test::More;
 use lib '../lib';
 use Privkeymake;
 use Data::Dumper;
+use bigint lib => 'GMP';
 
 
 my $obj = Privkeymake->new();
@@ -15,7 +16,7 @@ my $obj = Privkeymake->new();
 subtest 'string method' => sub {
 
        $obj->make; 
-    my $res = $obj->result;
+   my $res = $obj->result;
 #    say Dumper %$res;
     say "d: $res->{d}";
     say "n: $res->{n}";

@@ -5,8 +5,8 @@ package Codemod;
 # 暗号化は別もモジュールで行う想定
 
 # Codemod->new( 文字列);  変換用コンストラクタ  utf8の未エンコード文章を入力する
-#   ->ordcode 文字列をコード化する
-#   ->ordcoderes  デコード済　コード出力する 
+#   ->ordcode 文字列をコード化する    
+#   ->ordcoderes  デコード済　コード出力する  カンマを区切り文字としている
 
 # ordcoderesでの出力をdecnewで受け取る
 
@@ -29,15 +29,13 @@ sub new {
     # 入力された文字列を内部コードに
     # 1行づつ入力を受ける想定
 
-#    my @line;
     if ( defined $arg ) {
         $arg = encode_utf8($arg);
+    }
 
-#        @line = split(//,$arg);  #一文字ずつに分割
-#        for my $i (@line){
-#            $i = encode_utf8($i);
-#        }
-
+    # 空白行が入力された場合
+    if ( $arg eq "" ){
+        $arg = " ";   # 空白を1個追加する
     }
 
     return bless { 'string' => $arg } , $class;
@@ -102,6 +100,8 @@ sub ordcode {
             push(@code_b64,$chrcode);  # b64コードがASCII一文字づつ数値配列
             undef $chrcode;
         }
+
+ #   push(@code_b64,127);   # 127を区切りとして追加
 
     $self->{ordcode} = \@code_b64;
 
