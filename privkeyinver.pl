@@ -12,8 +12,8 @@ use Math::BigInt lib => 'GMP';
 use FindBin;
 use Math::GMP;
 
-use lib "$FindBin::Bin/model/Primechk";
-use Primechk;
+#use lib "$FindBin::Bin/model/Primechk";
+use Myapps::Primechk;
 
 $| = 1;
 
@@ -40,7 +40,7 @@ my $phy = $bp->bmul($bq);
 my $e = 65537;
 say "-----";
 
-#my $phyfac = Primechk->new($phy);
+#my $phyfac = Myapps::Primechk->new($phy);
 #   $phyfac->factor;
 #say "factor check END!";
 #my $resphyfac = $phyfac->factorres;
@@ -51,7 +51,7 @@ say "-----";
 # $n以下の素数で、$phyのfactorでは無いも
 #    for (my $i=$phy-$rnd; $i>1; $i-- ){
   #  for (my $i=$phy-1; $i>1; $i-- ){
-      #  my $CHK = Primechk->new($i);
+      #  my $CHK = Myapps::Primechk->new($i);
       #     $CHK->checkspvm;
 #         my $CHK = Math::GMP->new($i);
 #         my $res = $CHK->probab_prime(50);
@@ -72,7 +72,7 @@ say "-----";
 
 #                   say "e: $e";
 
-                my $obj = Primechk->new($e,$phy);
+                my $obj = Myapps::Primechk->new($e,$phy);
                    $obj->gcd;
                 my $gcdres = $obj->gcdres;
               #  say " gcd: ($e , $phy) = $gcdres";

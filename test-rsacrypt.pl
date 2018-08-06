@@ -14,9 +14,9 @@ use Encode qw/encode_utf8 decode_utf8/;
 #use lib "$FindBin::Bin/model/Codemod";
 # make install したのでコメントアウト
 
-use Privkeymake;    # キー作成
-use Codemod;        # 文字列の数値化と複号
-use Rsacrypt;
+use Myapps::Privkeymake;    # キー作成
+use Myapps::Codemod;        # 文字列の数値化と複号
+use Myapps::Rsacrypt;
 
 use Math::BigInt lib => 'GMP';
 
@@ -24,7 +24,7 @@ $|=1;
 
 say "start key generate";
 # 鍵の作成
-my $keys = Privkeymake->new;
+my $keys = Myapps::Privkeymake->new;
    $keys->make;
 my $keysres = $keys->result;  # HASH
 
@@ -65,7 +65,7 @@ say for @page;
 
 # 行単位でコード化   コード化そのものには桁数上限は特に無い
 for my $i ( @page) {
-    my $mess = Codemod->new($i);
+    my $mess = Myapps::Codemod->new($i);
        $mess->ordcode;
     my $numstring = $mess->ordcoderes; # 数字列
     push(@page_code,$numstring);
@@ -84,7 +84,7 @@ my $n = $keysres->{n};
 
 my $input_code = join("\n",@page_code);
 
-my $obj = Rsacrypt->new($input_code);
+my $obj = Myapps::Rsacrypt->new($input_code);
    $obj->pubkey($n);
    $obj->encode;
 my $enc_nums = $obj->encoderes;    # 改行付き平文　数列  メールなどでやり取りに使う
@@ -96,7 +96,7 @@ say $enc_nums;
 
 my $d = $keysres->{d};
 
-my $obj2 = Rsacrypt->new($enc_nums);
+my $obj2 = Myapps::Rsacrypt->new($enc_nums);
    $obj2->privkey({d=>$d,n=>$n});
    $obj2->decode;
 my $res = $obj2->decoderes;    #配列リファレンス
@@ -104,7 +104,7 @@ my $res = $obj2->decoderes;    #配列リファレンス
 my @decnums = @$res;
 
 for my $chr (@decnums){
-    my $dec = Codemod->decnew($chr);
+    my $dec = Myapps::Codemod->decnew($chr);
        $dec->chrcode;
 
     my $decstring = $dec->chrcoderes;

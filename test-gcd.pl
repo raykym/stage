@@ -7,10 +7,10 @@ use feature 'say';
 use FindBin;
 
 #use lib "$FindBin::Bin/model/Primechkr";
-use Primechk;
+use Myapps::Primechk;
 use Data::Dumper;
 
-my $obj = Primechk->new(9243532423425234,742693835267235);
+my $obj = Myapps::Primechk->new(9243532423425234,742693835267235);
    $obj->gcd;
 say $obj->gcdres;
 

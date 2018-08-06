@@ -11,8 +11,8 @@ use bigint lib => 'GMP';
 use Math::BigInt lib => 'GMP';
 use FindBin;
 
-use lib "$FindBin::Bin/model/Primechk";
-use Primechk;
+#use lib "$FindBin::Bin/model/Primechk";
+use Myapps::Primechk;
 
 $| = 1;
 
@@ -28,7 +28,7 @@ my $phy = ($p - 1 ) * ( $q - 1);
 
 my $e;
 
-my $phyfac = Primechk->new($phy);
+my $phyfac = Myapps::Primechk->new($phy);
    $phyfac->factor;
 my $resphyfac = $phyfac->factorres;
 
@@ -67,7 +67,7 @@ for my $j ( @candi ){
 
    say "e: $e";
 
-my $obj = Primechk->new($e,$phy);
+my $obj = Myapps::Primechk->new($e,$phy);
    $obj->gcd;
 my $gcdres = $obj->gcdres;
 say " gcd: ($e , $phy) = $gcdres";

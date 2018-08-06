@@ -13,7 +13,7 @@ use FindBin;
 use Math::GMP;
 
 #use lib "$FindBin::Bin/model/Primechk";
-use Primechk;
+use Myapps::Primechk;
 
 $| = 1;
 
@@ -100,7 +100,7 @@ while ($end){
     }
 
                 # 最大公約数を求めて、履歴から不定方程式を解く
-                my $obj = Primechk->new($e,$phy);
+                my $obj = Myapps::Primechk->new($e,$phy);
                    $obj->gcd;
                 my $gcdres = $obj->gcdres;
                 say " gcd: ($e , $phy) = $gcdres";

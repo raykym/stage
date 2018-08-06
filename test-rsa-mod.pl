@@ -14,8 +14,8 @@ use Encode qw/encode_utf8 decode_utf8/;
 #use lib "$FindBin::Bin/model/Codemod";
 # make install したのでコメントアウト
 
-use Privkeymake;    # キー作成
-use Codemod;        # 文字列の数値化と複号
+use Myapps::Privkeymake;    # キー作成
+use Myapps::Codemod;        # 文字列の数値化と複号
 
 use Math::BigInt lib => 'GMP';
 
@@ -23,7 +23,7 @@ $|=1;
 
 say "start key generate";
 # 鍵の作成
-my $keys = Privkeymake->new;
+my $keys = Myapps::Privkeymake->new;
    $keys->make;
 my $keysres = $keys->result;  # HASH
 
@@ -73,7 +73,7 @@ say for @page;
 
 # 行単位でコード化   コード化そのものには桁数上限は特に無い
 for my $i ( @page) {
-    my $mess = Codemod->new($i);
+    my $mess = Myapps::Codemod->new($i);
        $mess->ordcode;
     my $numstring = $mess->ordcoderes; # 数字列
     push(@page_code,$numstring);
@@ -200,7 +200,7 @@ for (my $i=0; $i<=$#chrs; $i++){
 #say for @decnums;
 
 for my $chr (@decnums){
-    my $dec = Codemod->decnew($chr);
+    my $dec = Myapps::Codemod->decnew($chr);
        $dec->chrcode;
 
     my $decstring = $dec->chrcoderes;
