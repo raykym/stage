@@ -24,6 +24,8 @@ sub new {
     my ( $class , @arg ) = @_;
     # 特に何もしない
 
+    srand(); #並列処理のため
+
     return bless { } , $class;
 }
 
