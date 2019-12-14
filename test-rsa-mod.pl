@@ -33,7 +33,6 @@ say "n: $keysres->{n}";
 say "message convert";
 
 # メッセージの作成
-sub AAAAAAA {
 my $str = << "EOF";
 あめんぼあかいよあいうえお
           株式会社ほげほげ
@@ -55,8 +54,8 @@ my $str = << "EOF";
 
 EOF
 
-} # AAAAAAAA
 
+if (0){
 my $str = << "EOF";
 あいうえおかきくけこさしすせそたちつてとなにぬねのまみむめもやゆよわおん
 イロハニホヘトチリヌルヲワガヨタレソツネナラムウイノオクヤマケフコエテ
@@ -64,6 +63,7 @@ abcdefghijklmnopqrstuvwxyz
 ABCDEFGHIJKLMNOPQRSTUVWXYZ
 EOF
 
+} #block
 
 my @page = split(/\n/,$str);  # 行に分解
 my @page_code;
@@ -207,5 +207,5 @@ for my $chr (@decnums){
 #    say "decode line";
 #    say $chr;
     
-    say encode_utf8($decstring);
+    say $decstring;
 }

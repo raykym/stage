@@ -35,8 +35,6 @@ sub make {
 
     # 素数の作成
     my $e = 65537;
-    my $res_p = 0;
-    my $res_q = 0;
     my $p;
     my $q;
     my $n;
@@ -44,51 +42,45 @@ sub make {
     my $end = 1;
     my $d;
     my $x;
+    my $res = 0;
+    my @nap;
 
 
     while ($end) {
 
     # 素数で在ること、phyの素因数では無いこと
-    while (($res_p == 0 ) || ($res_q == 0 )) {
-        # 乱数でベースを選ぶ
-     my @na = ();
-	
-     for my $j ( 1 .. 2) {
-        my @cont;
+     for my $j ( 0 .. 1 ){
 
-        for my $i ( 1 .. 300 ){
-            push(@cont, int(rand(9)));
-        }
-        push(@na , join("",@cont));
-	undef @cont;
-      }	
-	
-           $p = Math::BigInt->new($na[0]);
-           $q = Math::BigInt->new($na[1]);
+         while ( $res == 0 ) {
+             my @cont;
 
-           # 6n+1 or 6n+5
-           $p->bmul(6);
-           if ( int(rand(10)) < 5 ) {
-                                       $p->binc;
-                                   } else {
-                                       $p->badd(5);
-                                   }
-           $q->bmul(6);
-           if ( int(rand(10)) < 5 ) {
-                                       $q->badd(5);
-                                    } else {
-                                       $q->binc;
-                                    }
+             for my $i ( 1 .. 300 ){
+                 push(@cont, int(rand(9)));
+             }
 
-        my $chk_p = Math::GMP->new($p);
-        my $chk_q = Math::GMP->new($q);
+             #push (@na, join("",@cont));
+             my $na = join("",@cont);
+             undef @cont;
 
-           $res_p = $chk_p->probab_prime(50);
-           $res_q = $chk_q->probab_prime(50);
+             $nap[$j] = Math::BigInt->new($na);
 
-	undef @na;
+             # 6n+1 or 6n+5
+             if ( int(rand(10)) < 5 ) {
+                                    $nap[$j]->binc;
+                                } else {
+                                    $nap[$j]->badd(5);
+                                }
 
-    } # while
+             my $chk = Math::GMP->new($nap[$j]);
+                $res = $chk->probab_prime(50);
+          } #while res
+
+          $res = 0;
+
+     } # for $j
+
+     $p = $nap[0];
+     $q = $nap[1];
 
     # n = p x q
     $n = $p->copy();
