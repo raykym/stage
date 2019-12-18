@@ -9,7 +9,7 @@ use FindBin;
 use lib "$FindBin::Bin/..";   # Myappsまでまでを通す
 use Myapps::Calcchange;
 
-#use bigint lib => 'GMP';
+use bigint lib => 'GMP';
 use Math::BigInt lib => 'GMP';
 use Math::GMP;
 
@@ -101,15 +101,24 @@ sub divisor {
 
     my $num = $self->{string};
 
-    my @res;
-    my $cnt = $num;
+    my @res = ();
+    #my $cnt = $num;
+    my $cnt = $num->copy();
 
-    while ( $cnt >= 1 ) {
-        my $chk = $num % $cnt;
-        if ( $chk == 0 ) {
-            push(@res,$cnt);
+    #while ( $cnt >= 1 ) {
+    while ( $cnt->bne(0) ) {
+
+	my $num_tmp = $num->copy();
+	    #my $chk = $num % $cnt;
+        my $chk = $num_tmp->bmod($cnt);
+	#if ( $chk == 0 ) {
+	if ( $chk->is_zero() ) {
+		say " chk: $chk";
+		say " cnt: $cnt";
+            push(@res,\$cnt);
         } 
-        $cnt--;
+	#$cnt--;
+	$cnt->bdec;
     }  
     $self->{divisorres} = \@res;
     return;
@@ -133,32 +142,24 @@ sub factor {
     my @res;
 
     # $numは減りながらループする  小さい数で割っていく
-    for (my $i=2; $i < $num; $i++){
+    my $i = 2;
+
+    push(@res,1);
+
+    while ( $i <= $num ){
 #        print "PROG: $num \r";
         my $chk = 0;
 
-        # $numが素数ならパスする     
-        my $chk_num = Math::GMP->new($num);
-        my $chk_prime = $chk_num->probab_prime(50);
-        last if ( ($chk_prime == 1 )||($chk_prime == 2));
+   #  $chk = $num % $i;
+        my $num_tmp = $num->copy();
+           $num_tmp->bmod($i);
+           $chk = $num_tmp->copy();
 
-        while ( $chk == 0 ) {
-      #      $chk = $num % $i;
-          my $num_tmp = $num->copy();
-             $num_tmp->bmod($i);
-             $chk = $num_tmp;
-      #      if ( $chk == 0 ) {
-            if ($num_tmp->is_zero()) {
-      #          $num = $num / $i;
-                 $num->bdiv($i);   # 割り切れて整数のはず
-                push(@res,$i);
-            }
-        } # while
-        
-    } # for
-#    say "";  # PROGの更新
-    push(@res,$num);
-    push(@res,1);
+        if ( $chk == 0 ) {
+           push(@res,$i);
+        }
+        $i++; 
+    } # while $i
 
     $self->{factorres} = \@res;
 
