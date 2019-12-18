@@ -96,45 +96,8 @@ sub result {
     return $self->{result};
 }
 
+
 sub divisor {
-	 my $self = shift;
-
-    my $num = $self->{string};
-
-    my @res = ();
-    #my $cnt = $num;
-    my $cnt = $num->copy();
-
-    #while ( $cnt >= 1 ) {
-    while ( $cnt->bne(0) ) {
-
-	my $num_tmp = $num->copy();
-	    #my $chk = $num % $cnt;
-        my $chk = $num_tmp->bmod($cnt);
-	#if ( $chk == 0 ) {
-	if ( $chk->is_zero() ) {
-		say " chk: $chk";
-		say " cnt: $cnt";
-            push(@res,\$cnt);
-        } 
-	#$cnt--;
-	$cnt->bdec;
-    }  
-    $self->{divisorres} = \@res;
-    return;
-}
-
-sub divisorres {
-    my $self = shift;
-
-    if ( ! defined $self->{divisorres} ) {
-        return;
-    }
-
-    return $self->{divisorres};
-}
-
-sub factor {
     my $self = shift;
 
     my $num = $self->{string};
@@ -161,8 +124,49 @@ sub factor {
         $i++; 
     } # while $i
 
-    $self->{factorres} = \@res;
+    $self->{divisorres} = \@res;
 
+    return;
+}
+
+sub divisorres {
+    my $self = shift;
+
+    if ( ! defined $self->{divisorres} ) {
+        return;
+    }
+
+    return $self->{divisorres};
+}
+
+sub factor {
+	 my $self = shift;
+
+    my $num = $self->{string};
+
+    my @res = ();
+
+    my $i = 2;
+
+    push(@res,1);
+
+    while ( $i <= $num ) {
+	my $chk = 0;
+
+	while ( $chk == 0){
+	    my $num_tmp = $num->copy();
+	        #my $chk = $num % $cnt;
+               $chk = $num_tmp->bmod($i);
+
+	    if ( $chk == 0 ) {
+                $num->bdiv($i);
+                push(@res,$i);
+            } 
+        } #while $chk
+
+	$i++;
+    }  
+    $self->{factorres} = \@res;
     return;
 }
 

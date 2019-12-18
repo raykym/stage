@@ -9,7 +9,7 @@ use Math::GMP;
 use Math::BigInt lib => 'GMP';
 use bigint lib => 'GMP';
 
-my $num = 128;
+my $num = 28;
 
 my @res;
 
@@ -21,21 +21,18 @@ while ( $i <= $num ){
 
     my $chk = 0;
 
-    # my $chk_num = Math::GMP->new($num);
+    #  my $chk_num = Math::GMP->new($num);
     #  my $chk_prime = $chk_num->probab_prime(50);
     #  last if ( $chk_prime != 0);
 
-    while ( $chk == 0 ){
 	my $num_tmp = $num->copy();
 	#$chk = $num % $i;
 	$num_tmp->bmod($i);
 	$chk = $num_tmp->copy();
 
 	if ($chk == 0 ){
-	   $num->bdiv($i);
            push(@res , $i );
 	}
-    } #while $chk
 
     $i++;
 } # while $i

@@ -17,31 +17,29 @@ my $chkres = $chk_num->probab_prime(50);
 
 if ($chkres != 0 ){
 
-	#say "prime num! $num";
-	exit;
-	#next;
+#	say "prime num! $num";
+	#exit;
+	next;
 }
 
 my $obj = Myapps::Primechk->new($num);
 
-   $obj->factor;
+   $obj->divisor;
    my $add = Math::BigInt->new(0);
-   for my $i (@{$obj->factorres}) {
+   for my $i (@{$obj->divisorres}) {
+	   if ( $num == $i ){
+               next;
+	   }
        $add->badd($i);		   
    }		  
    #  say " add: $add";
-   my $mul = Math::BigInt->new(1);
-   for my $i (@{$obj->factorres}) {
-       $mul->bmul($i);		   
-   }		  
-   #  say " mul $mul";
 
-   if ($mul->beq($add)){
+   if ($add->beq($num)){
       say " perfect: $num";
-      say "factor";
-      for my $i (@{$obj->factorres}) {
-          say for $i;		   
-      }		  
+      #say "factor";
+      # for my $i (@{$obj->divisorres}) {
+      #    say for $i;		   
+      #}		  
    }
 
 
