@@ -1,0 +1,20 @@
+package Mysubs {
+    use SPVM::Math;
+
+    sub geoDirect : int ($lat1 : double , $lng1 : double , $lat2 : double , $lng2 : double) {
+
+    my $Y = cos ($lng2 * pi / 180) * sin($lat2 * pi / 180 - $lat1 * pi / 180);
+
+    my $X = cos ($lng1 * pi / 180) * sin($lng2 * pi / 180 ) - sin($lng1 * pi /180) * cos($lng2 * pi / 180 ) * cos($lat2 * pi / 180 - $lat1 * pi / 180);
+
+    my $dirE0 = 180 * atan2($Y,$X) / pi;
+    if ($dirE0 < 0 ) {
+        $dirE0 = $dirE0 + 360;
+       }
+    my $dirN0 = ($dirE0 + 90) % 360; 
+
+    return $dirN0;
+
+  }
+
+}

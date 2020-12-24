@@ -1,0 +1,6 @@
+Revision history for Perl extension Myapps::MySubsXS.
+
+0.01  Fri Sep 25 00:59:03 2020
+	- original version; created by h2xs 1.23 with options
+		-A -n Myapps::MySubsXS
+

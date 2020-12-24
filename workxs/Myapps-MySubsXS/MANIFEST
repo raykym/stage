@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+MySubsXS.xs
+ppport.h
+README
+t/Myapps-MySubsXS.t
+lib/Myapps/MySubsXS.pm
